@@ -59,13 +59,13 @@
               when: ansible_facts['distribution_major_version'] == '8'
               rhsm_repository:
                 name: "{{ repos_4_to_disable + repos_5_to_disable }}"
-                state: absent
+                state: disabled
 
             - name: disable older rhceph repositories if any on RHEL{{ansible_facts['distribution_major_version']}}
               when: ansible_facts['distribution_major_version'] == '9'
               rhsm_repository:
                 name: "{{ repos_5_to_disable + repos_6_to_disable }}"
-                state: absent
+                state: disabled
 
         - name: enable ceph package repositories
           when: ceph_origin in ['community', 'ibm']
@@ -95,7 +95,7 @@
                 gpgkey: "{{ _ceph_repo.rpm_key }}"
                 baseurl: "{{ _ceph_repo.baseurl }}/{{ item }}"
                 file: "ceph_stable_{{ item }}"
-                priority: '2'
+                priority: "2"
               register: result
               until: result is succeeded
               loop: "{{ _ceph_repo.paths }}"
@@ -105,8 +105,7 @@
           block:
             - name: fetch ceph development repository
               uri:
-                url:
-                  "https://shaman.ceph.com/api/repos/ceph/\
+                url: "https://shaman.ceph.com/api/repos/ceph/\
                   {{ ceph_dev_branch }}/\
                   {{ ceph_dev_sha1 }}/\
                   centos/{{ ansible_facts['distribution_major_version'] }}/\
@@ -120,12 +119,12 @@
                 dest: /etc/yum.repos.d/ceph-dev.repo
                 owner: root
                 group: root
-                mode: '0644'
+                mode: "0644"
                 backup: true
 
             - name: remove ceph_stable repositories
               yum_repository:
-                name: '{{ item }}'
+                name: "{{ item }}"
                 file: ceph_stable
                 state: absent
               with_items:
@@ -146,7 +145,7 @@
                     baseurl: "{{ custom_repo_url }}"
                     enabled: "{{ custom_repo_enabled | default(1) }}"
                     file: ceph_custom
-                    priority: '2'
+                    priority: "2"
               when: ceph_custom_repositories is undefined
 
             - name: setup custom repositories
@@ -206,7 +205,6 @@
           register: result
           until: result is succeeded
           when: client_group in group_names
-
 
         - name: ensure chronyd is running
           service:
