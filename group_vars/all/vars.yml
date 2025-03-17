@@ -2,7 +2,10 @@ ceph_cluster_network: "10.13.212.0/24"
 ceph_public_network: "10.13.212.0/24"
 gateway: "10.13.212.1" # Adjust this to match your network
 gateway_netmask_v4: "255.255.252.0"
-
+ceph_origin: "rhcs" # redhat version of ceph
+ceph_dev_branch: main
+ceph_dev_sha1: latest
+ceph_rhcs_version: 7
 cephadm_user: "cephadm"
 ansible_user: "{{ cephadm_user }}"
 remote_user: "{{ cephadm_user }}"
